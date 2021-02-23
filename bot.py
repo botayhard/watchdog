@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import logging
 import datetime
@@ -22,6 +23,10 @@ def watchdoging(update, context):
     msg=update.effective_message
     chat_id=msg.chat.id
     user_id=msg.from_user.id
+    first_name = re.sub("[_]", "\_", msg.from_user.first_name)
+    first_name = re.sub("[*]", "\*", first_name)
+    first_name = re.sub("[`]", "\`", first_name)
+    first_name = re.sub("[[]", "\[", first_name)
     restrict=ChatPermissions(can_send_messages=False, can_send_media_messages=False, can_send_polls=False, can_send_other_messages=False, can_add_web_page_previews=False)
     keyboard=[
         [InlineKeyboardButton('click',callback_data=user_id)]
@@ -29,7 +34,7 @@ def watchdoging(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.delete_message(chat_id=chat_id,message_id=msg.message_id)
     context.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id, until_date=datetime.datetime.now() + datetime.timedelta(minutes=2), permissions = restrict)
-    res=context.bot.send_message(chat_id=chat_id, text='Привет. Нужно в течение минуты нажать кнопку ниже, иначе права не дам. Если успел, жди час для новой попытки.', reply_markup=reply_markup)
+    res=context.bot.send_message(chat_id=chat_id, text='Привет, ['+first_name+'](tg://user?id=' + str(user_id) + '). Нужно в течение минуты нажать кнопку ниже, иначе права не дам. Если успел, жди час для новой попытки.', parse_mode='Markdown', reply_markup=reply_markup)
     time.sleep(60)
     user_info=context.bot.get_chat_member(chat_id=chat_id,user_id=user_id)
     if(not user_info.can_send_messages):
