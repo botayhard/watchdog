@@ -5,4 +5,4 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
 
-CMD bot.py 1>/dev/stdout 2>/dev/stderr 
+CMD python bot.py 1>/dev/stdout 2>/dev/stderr 
