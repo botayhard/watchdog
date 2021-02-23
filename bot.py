@@ -34,7 +34,7 @@ def watchdoging(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     context.bot.delete_message(chat_id=chat_id,message_id=msg.message_id)
     context.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id, until_date=datetime.datetime.now() + datetime.timedelta(minutes=2), permissions = restrict)
-    res=context.bot.send_message(chat_id=chat_id, text='Привет, ['+first_name+'](tg://user?id=' + str(user_id) + '). Нужно в течение минуты нажать кнопку ниже, иначе права не дам. Если успел, жди час для новой попытки.', parse_mode='Markdown', reply_markup=reply_markup)
+    res=context.bot.send_message(chat_id=chat_id, text='Привет, ['+first_name+'](tg://user?id=' + str(user_id) + '). Нужно в течение минуты нажать кнопку ниже, иначе права не дам. Если не успел, жди час для новой попытки.', parse_mode='Markdown', reply_markup=reply_markup)
     time.sleep(60)
     user_info=context.bot.get_chat_member(chat_id=chat_id,user_id=user_id)
     if(not user_info.can_send_messages):
